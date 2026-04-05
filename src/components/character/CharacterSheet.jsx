@@ -4,6 +4,7 @@ import { useCharacterContext } from '../../context/CharacterContext';
 import { xpProgress } from '../../utils/xp';
 import { CHARACTER_CLASSES } from '../../constants/classes';
 import StatBar from './StatBar';
+import StreakBadge from '../shared/StreakBadge';
 import theme from '../../theme';
 
 const Sheet = styled.div`
@@ -153,9 +154,34 @@ const STAT_CONFIG = [
   { key: 'charisma', name: 'Charisma', icon: '💍', color: '#8e44ad' },
 ];
 
-export default function CharacterSheet() {
+const RestoreBtn = styled(motion.button)`
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  font-family: ${theme.fonts.display};
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: ${theme.colors.lightText};
+  background: linear-gradient(135deg, #2d6a2d, #3d8b4a);
+  border: 1px solid #3d8b4a;
+  border-radius: 3px;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 0 10px rgba(61, 139, 74, 0.3);
+  }
+`;
+
+const StreakSection = styled.div`
+  text-align: center;
+  margin-bottom: 16px;
+`;
+
+export default function CharacterSheet({ onRestoreHpMp }) {
   const { state } = useCharacterContext();
-  const { name, title, className, stats, xp, gold, hp, mp, talents } = state;
+  const { name, title, className, stats, xp, gold, hp, mp, talents, streakDays } = state;
 
   const classData = CHARACTER_CLASSES.find((c) => c.id === className);
   const progress = xpProgress(xp);
@@ -227,7 +253,18 @@ export default function CharacterSheet() {
             <DerivedLabel>Gold</DerivedLabel>
           </DerivedStat>
         </DerivedStatsGrid>
+        {(hp < maxHp || mp < maxMp) && onRestoreHpMp && (
+          <RestoreBtn onClick={onRestoreHpMp} whileTap={{ scale: 0.95 }}>
+            Rest & Restore HP/MP
+          </RestoreBtn>
+        )}
       </StatsSection>
+
+      {streakDays > 0 && (
+        <StreakSection>
+          <StreakBadge days={streakDays} />
+        </StreakSection>
+      )}
     </Sheet>
   );
 }

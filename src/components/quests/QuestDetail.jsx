@@ -194,7 +194,7 @@ const RECURRENCE_NAMES = {
   monthly: 'Monthly',
 };
 
-export default function QuestDetail({ quest, onClose, onStart, onComplete, onFail, onAbandon, onToggleBonus }) {
+export default function QuestDetail({ quest, onClose, onStart, onComplete, onFail, onAbandon, onToggleBonus, onEdit }) {
   if (!quest) return null;
 
   const difficulty = DIFFICULTIES.find((d) => d.id === quest.difficulty);
@@ -269,9 +269,16 @@ export default function QuestDetail({ quest, onClose, onStart, onComplete, onFai
 
         <ActionButtons>
           {quest.status === 'available' && (
-            <ActionBtn $variant="start" onClick={() => onStart(quest.id)} whileTap={{ scale: 0.95 }}>
-              Begin Quest
-            </ActionBtn>
+            <>
+              <ActionBtn $variant="start" onClick={() => onStart(quest.id)} whileTap={{ scale: 0.95 }}>
+                Begin Quest
+              </ActionBtn>
+              {onEdit && (
+                <ActionBtn $variant="default" onClick={() => onEdit(quest)} whileTap={{ scale: 0.95 }}>
+                  Edit
+                </ActionBtn>
+              )}
+            </>
           )}
           {quest.status === 'in_progress' && (
             <>

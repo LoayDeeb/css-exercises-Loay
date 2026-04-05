@@ -1,7 +1,14 @@
 import { useState, useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import theme from '../../theme';
+
+const candleFlicker = keyframes`
+  0%, 100% { opacity: 0.03; }
+  25% { opacity: 0.05; }
+  50% { opacity: 0.02; }
+  75% { opacity: 0.06; }
+`;
 import BookPage from './BookPage';
 import BookSpine from './BookSpine';
 import RibbonTabs from './RibbonTabs';
@@ -17,6 +24,18 @@ const AppWrapper = styled.div`
   background: #0d0805;
   overflow: hidden;
   position: relative;
+
+  /* Candle flicker ambient effect */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(255, 180, 60, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(255, 160, 40, 0.06) 0%, transparent 50%);
+    animation: ${candleFlicker} 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
 `;
 
 /* Leather cover - the book's outer casing */
